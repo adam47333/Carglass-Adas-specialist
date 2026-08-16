@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505"><title>ADAS Expert</title>
+<style>
+:root{--bg:#050505;--panel:#101010;--panel2:#171717;--red:#e30613;--yellow:#ffd400;--white:#f7f7f7;--muted:#929292;--line:#292929;--green:#65ff91}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#3a1015 0,#090909 32%,#050505 68%);color:var(--white);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.app{max-width:520px;margin:auto;padding-bottom:92px}
+header{padding:18px 16px 14px;position:sticky;top:0;z-index:10;background:#050505ee;backdrop-filter:blur(16px);border-bottom:1px solid #252525}.brand{font-size:21px;font-weight:1000;letter-spacing:.1em}.brand b{color:var(--red)}.tag{font-size:9px;color:var(--yellow);font-weight:900;letter-spacing:.16em;margin-top:3px}.online{float:right;margin-top:-23px;color:var(--green);font-size:11px;font-weight:800}
+main{padding:12px}.hero{padding:20px 4px 10px}.hero h1{margin:0;font-size:35px;line-height:.93;letter-spacing:-.045em;font-weight:1000}.hero h1 span{color:var(--red)}.hero p{color:#969696;font-size:11px;margin:9px 0 0}.card{background:linear-gradient(145deg,#121212,#0a0a0a);border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;box-shadow:0 14px 40px #0009}.label{font-size:9px;color:#777;font-weight:900;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+input,textarea,button{font:inherit}input,textarea{width:100%;background:#161616;border:1px solid #353535;color:#fff;border-radius:11px;padding:12px;outline:none}input:focus,textarea:focus{border-color:var(--yellow);box-shadow:0 0 0 2px #ffd40018}input{text-transform:uppercase;font-weight:900;letter-spacing:.1em;text-align:center}button{width:100%;border:0;border-radius:11px;padding:12px;margin-top:8px;background:var(--red);color:#fff;font-weight:950;cursor:pointer}button.yellow{background:var(--yellow);color:#090909}button.dark{background:#191919;border:1px solid #373737}.status{font-size:11px;color:var(--muted);margin-top:7px;line-height:1.4}.hidden{display:none}
+.vehicleTop{display:flex;align-items:center;justify-content:space-between;gap:10px}.vehicleName{font-size:18px;font-weight:950}.plate{background:#f0f0f0;color:#111;border-radius:6px;padding:4px 7px;font-size:11px;font-weight:950;white-space:nowrap}.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.stat{background:#171717;border:1px solid #272727;border-radius:10px;padding:8px;font-size:9px;color:#777}.stat b{display:block;color:#fff;font-size:12px;margin-top:2px}.systems{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px}.sys{background:#0d0d0d;border:1px solid #292929;border-radius:10px;padding:8px;text-align:center}.sys i{display:block;color:var(--yellow);font-style:normal;font-size:16px}.sys b{display:block;font-size:9px;margin-top:2px}.sys small{font-size:8px;color:var(--green)}
+.voice{text-align:center;padding-top:15px}.orb{width:100px;height:100px;margin:6px auto 10px;border-radius:50%;background:radial-gradient(circle,#ff3a46 0,#bd0010 43%,#4d0005 70%,#160000 100%);display:flex;align-items:center;justify-content:center;font-size:38px;box-shadow:0 0 0 8px #e3061312,0 0 38px #e3061370;cursor:pointer;user-select:none}.orb.active{animation:pulse 1.25s infinite;box-shadow:0 0 0 14px #ffd40014,0 0 58px #ffd40085}.voiceTitle{font-size:16px;font-weight:950}.voiceSub{font-size:10px;color:#777;margin-top:3px}.chat{max-height:155px;overflow:auto;margin-top:10px;text-align:left}.bubble{padding:8px 10px;border-radius:11px;background:#191919;margin:5px 0;font-size:11px;line-height:1.4}.me{margin-left:28px;background:#261014;border:1px solid #4a1a20}.expert{border-left:3px solid var(--yellow)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.action{background:#111;border:1px solid #292929;border-radius:13px;padding:13px;text-align:left;cursor:pointer}.action span{font-size:21px}.action b{display:block;font-size:12px;margin-top:3px}.action small{display:block;color:#777;font-size:9px;margin-top:3px}
+.result{margin-top:9px;border:1px solid #2c2c2c;border-radius:13px;background:#111;padding:11px}.resultHead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;font-weight:950;letter-spacing:.07em}.badge{padding:4px 6px;border-radius:6px;background:#3b3000;color:var(--yellow);font-size:8px}.resultText{font-size:12px;line-height:1.4;margin-top:6px;color:#e9e9e9}.result.next{border-color:#5a171d;background:#17090a}.result.next .badge{background:var(--red);color:#fff}.result.uncertain{border-color:#7a5c00}.photoBox{display:none;margin-top:9px;border:1px solid #2b2b2b;border-radius:12px;padding:8px;background:#0b0b0b}.photoBox img{width:100%;max-height:220px;object-fit:contain;border-radius:8px;display:block}.photoMeta{font-size:9px;color:#777;margin-top:5px}.warn{font-size:9px;color:#777;line-height:1.4;padding:8px 2px}.nav{position:fixed;bottom:0;left:0;right:0;max-width:520px;margin:auto;background:#090909f7;border-top:1px solid #292929;display:grid;grid-template-columns:repeat(4,1fr);padding:7px 5px calc(7px + env(safe-area-inset-bottom));z-index:20}.nav button{margin:0;background:none;color:#888;padding:3px;font-size:9px}.nav button.active{color:var(--yellow)}.nav span{display:block;font-size:17px;margin-bottom:2px}
+
+.stepList{display:grid;gap:8px;margin-top:8px}
+.step{display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:start;background:#151515;border:1px solid #2d2d2d;border-radius:12px;padding:10px}
+.stepNo{width:30px;height:30px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:12px}
+.stepTitle{font-size:12px;font-weight:950;color:#fff}.stepCheck{font-size:10px;line-height:1.45;color:#c9c9c9;margin-top:3px}.why{font-size:9px;color:#777;margin-top:3px}
+.summary{background:#241012;border:1px solid #5c2026;border-radius:12px;padding:11px;margin-top:9px}.summary b{color:var(--yellow);font-size:10px}.summary div{font-size:11px;line-height:1.45;margin-top:4px}
+.measure{background:#101010;border:1px solid #333;border-left:3px solid var(--yellow);padding:9px;border-radius:9px;margin-top:7px;font-size:10px;line-height:1.45}.measure b{color:#fff}
+
+.vehicleDetails{margin-top:10px;border-top:1px solid #292929;padding-top:10px}
+.detailGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.detail{background:#0e0e0e;border:1px solid #272727;border-radius:9px;padding:8px}
+.detail small{display:block;color:#777;font-size:8px;text-transform:uppercase;letter-spacing:.08em}
+.detail b{display:block;font-size:10px;margin-top:2px}
+.boschCard{margin-top:10px;background:linear-gradient(145deg,#171717,#0b0b0b);border:1px solid #403b00;border-radius:13px;padding:11px}
+.boschHead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.boschLogo{font-weight:1000;font-size:13px;color:#fff}.boschLogo span{color:var(--yellow)}
+.boschBadge{font-size:8px;color:#111;background:var(--yellow);padding:4px 6px;border-radius:5px;font-weight:1000}
+.fitTitle{font-size:12px;font-weight:1000;margin:4px 0 7px;color:#fff}.wiperCategory{font-size:8px;font-weight:1000;color:var(--yellow);letter-spacing:.12em;margin-top:9px;margin-bottom:3px}.wiperRow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid #292929}
+.wiperRow:last-child{border-bottom:0}.wiperRow b{font-size:10px}.wiperRow small{display:block;color:#777;font-size:8px;margin-top:2px}.wiperCode{font-size:9px;color:#7dff9a;font-weight:1000;text-align:right;white-space:nowrap}.why{margin-top:8px;color:#aaa;font-size:9px}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+</style><style>.plateCountryRow{display:flex;gap:8px;align-items:stretch}.plateCountryRow select{min-width:145px;border:1px solid #333;background:#151515;color:#fff;border-radius:10px;padding:0 10px;font-weight:800}.foreignHint{margin-top:8px;padding:10px 12px;border:1px solid #333;border-radius:12px;background:#111;color:#bbb;font-size:11px;line-height:1.4}.foreignHint b{color:#fff}.wiperCategory{font-size:9px!important;font-weight:1000!important;letter-spacing:.12em;padding:5px 7px;background:#222;border-radius:7px;margin-top:9px;color:#ffd400!important}</style>
+<style>
+.calPanel{margin:14px 0;padding:16px;border:1px solid #2d2d2d;border-radius:16px;background:#111;box-shadow:0 8px 30px #0005}
+.calHeader{display:flex;justify-content:space-between;align-items:center;gap:12px}.calHeader h2{margin:2px 0 0;font-size:18px}.calEyebrow{font-size:9px;font-weight:900;letter-spacing:.16em;color:#ffd400}.calBadge{font-size:9px;font-weight:900;padding:6px 9px;border-radius:999px;background:#272727;color:#aaa}
+.calGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.calCard,.calDetails>div{padding:10px;border-radius:11px;background:#191919;border:1px solid #292929}.calCard b{display:block;font-size:11px}.calCard span,.calDetails span{display:block;color:#bbb;font-size:10px;margin-top:5px;line-height:1.4}.calDetails{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.calDetails b{font-size:10px}.calWarning{margin-top:9px;padding:9px;border-radius:10px;background:#211f13;color:#d6d0a3;font-size:10px;line-height:1.4}
+@media(max-width:600px){.calGrid,.calDetails{grid-template-columns:1fr}}
+</style>
+
+<style>
+.idBox{display:grid;gap:9px;margin-top:9px}
+.idBox>#plate{font-size:18px;font-weight:800;letter-spacing:.08em;padding:15px 14px;border:2px solid #e60012;border-radius:12px;background:#171717;color:#fff;text-align:center}
+.idBox>select,.vinBox input{width:100%;box-sizing:border-box;padding:12px 13px;border-radius:11px;border:1px solid #333;background:#171717;color:#fff}
+.vinBox{padding:10px;border:1px solid #2c2c2c;border-radius:12px;background:#121212}
+.vinBox b{display:block;font-size:10px;letter-spacing:.08em;color:#ffd400;margin-bottom:6px}
+</style>
+<style>
+.calModeHero{margin:14px 0;padding:16px;border:1px solid #3a3a3a;border-radius:16px;background:linear-gradient(135deg,#17070a,#101010)}
+.modeLabel{font-size:11px;font-weight:900;letter-spacing:.16em;color:#ffd400}.modeValue{font-size:27px;font-weight:950;margin-top:5px;color:#fff}.modeNote{font-size:12px;line-height:1.45;color:#aaa;margin-top:5px}
+.calCard strong{display:block;margin-top:8px;width:max-content;max-width:100%;padding:5px 8px;border-radius:8px;font-size:10px;letter-spacing:.06em}.modeTag{background:#333;color:#fff}.modeTag.static{background:#5d4b00;color:#ffd400}.modeTag.dynamic{background:#3b1115;color:#ff4655}.modeTag.unknown{background:#222;color:#aaa}
+.calSteps{margin-top:14px;padding:15px;border:1px solid #303030;border-radius:14px;background:#111}.stepsTitle{font-size:11px;font-weight:900;letter-spacing:.14em;color:#ffd400;margin-bottom:8px}#calChecks{font-size:13px;line-height:1.65;color:#ddd}
+</style></head>
+<body><div class="app">
+<header><div class="brand">ADAS <b>EXPERT</b></div><div class="tag">SMART DIAGNOSTICS</div><div class="online">● ONLINE</div></header>
+<main>
+<section class="hero"><h1>JOUW <span>ADAS</span><br>COLLEGA.</h1><p>Snel. Duidelijk. Technisch onderbouwd.</p></section>
+
+
+
+<section class="card">
+<div class="label">Voertuig identificeren</div>
+<div class="idBox">
+  <input id="plate" maxlength="8" placeholder="KENTEKEN — bijv. 12-ABC-3" autocomplete="off">
+  <select id="countrySelect" aria-label="Land kenteken">
+    <option value="NL">🇳🇱 Nederland</option><option value="DE">🇩🇪 Duitsland</option><option value="BE">🇧🇪 België</option><option value="FR">🇫🇷 Frankrijk</option><option value="GB">🇬🇧 Verenigd Koninkrijk</option><option value="ES">🇪🇸 Spanje</option><option value="IT">🇮🇹 Italië</option><option value="AT">🇦🇹 Oostenrijk</option><option value="CH">🇨🇭 Zwitserland</option><option value="LU">🇱🇺 Luxemburg</option><option value="DK">🇩🇰 Denemarken</option><option value="SE">🇸🇪 Zweden</option><option value="NO">🇳🇴 Noorwegen</option><option value="FI">🇫🇮 Finland</option><option value="PL">🇵🇱 Polen</option><option value="CZ">🇨🇿 Tsjechië</option><option value="PT">🇵🇹 Portugal</option><option value="IE">🇮🇪 Ierland</option><option value="US">🇺🇸 Verenigde Staten</option>
+  </select>
+  <div class="vinBox"><b>VIN / chassisnummer</b><input id="vinInput" type="text" maxlength="17" placeholder="17 tekens — VIN heeft voorrang op kenteken" autocomplete="off"></div>
+</div><button class="yellow" onclick="lookup()">🔎 VOERTUIG OPHALEN</button><div id="vs" class="status"></div>
+<div id="vehicle" class="hidden" style="margin-top:12px"><div class="vehicleTop"><div><div id="vtitle" class="vehicleName"></div><div id="vsub" class="status"></div></div><div id="vplate" class="plate"></div></div>
+<div class="grid"><div class="stat">MERK<b id="brand">-</b></div><div class="stat">MODEL<b id="model">-</b></div><div class="stat">1E TOELATING<b id="first">-</b></div><div class="stat">SOORT<b id="kind">-</b></div></div>
+<div class="systems"><div class="sys"><i>◉</i><b>CAMERA</b><small>READY</small></div><div class="sys"><i>◉</i><b>RADAR</b><small>READY</small></div><div class="sys"><i>◇</i><b>AEB</b><small>READY</small></div></div>
+<div class="vehicleDetails"><div class="label">Voertuigdetails</div><div class="detailGrid">
+<div class="detail"><small>Brandstof</small><b id="fuel">-</b></div>
+<div class="detail"><small>Carrosserie</small><b id="body">-</b></div>
+<div class="detail"><small>Massa</small><b id="mass">-</b></div>
+<div class="detail"><small>APK</small><b id="apk">-</b></div>
+<div class="detail"><small>Motorinhoud</small><b id="engine">-</b></div>
+<div class="detail"><small>Vermogen</small><b id="power">-</b></div>
+<div class="detail"><small>Aantal deuren</small><b id="doors">-</b></div>
+<div class="detail"><small>Type voertuig</small><b id="type">-</b></div>
+</div>
+<div class="boschCard"><div class="boschHead"><div class="boschLogo">BOSCH <span>RUITENWISSERS</span></div><div class="boschBadge">DIRECT ADVIES</div></div>
+<div id="boschRows"><div class="status">Na kenteken ophalen verschijnen hier direct de passende Bosch-wissers.</div></div>
+</div></div></div>
+</section>
+
+<section class="calPanel" id="calibrationPanel">
+  <div class="calHeader">
+    <div><span class="calEyebrow">BOSCH ADAS</span><h2>Kalibratie voorbereiding</h2></div>
+    <span id="calReadyBadge" class="calBadge">VOERTUIG NODIG</span>
+  </div>
+  <div class="calModeHero">
+    <div class="modeLabel">KALIBRATIETYPE</div>
+    <div id="calOverallMode" class="modeValue">Nog niet bepaald</div>
+    <div id="calModeNote" class="modeNote">Voer eerst kenteken of VIN in. De exacte procedure blijft voertuigvariant-afhankelijk.</div>
+  </div>
+  <div class="calGrid">
+    <div class="calCard"><b>📷 Front camera</b><span id="calCamera">Onbekend</span><strong id="calCameraMode">—</strong></div>
+    <div class="calCard"><b>📡 Front radar</b><span id="calFrontRadar">Onbekend</span><strong id="calFrontRadarMode">—</strong></div>
+    <div class="calCard"><b>📡 Rear/side radar</b><span id="calRearRadar">Onbekend</span><strong id="calRearRadarMode">—</strong></div>
+    <div class="calCard"><b>🅿️ 360° / rear camera</b><span id="calCamera360">Onbekend</span><strong id="calCamera360Mode">—</strong></div>
+  </div>
+  <div class="calDetails">
+    <div><b>Benodigd Bosch target / hulpmiddel</b><span id="calTarget">Nog niet bepaald</span></div>
+    <div><b>Uitlijning / meetmethode</b><span id="calAlignment">Nog niet bepaald</span></div>
+    <div><b>Diagnose / kalibratiemethode</b><span id="calMethod">Nog niet bepaald</span></div>
+  </div>
+  <div class="calSteps">
+    <div class="stepsTitle">SNELLE VOORBEREIDING</div>
+    <div id="calChecks">Voer eerst een voertuig in.</div>
+  </div>
+  <div class="calWarning">⚠️ <b>Belangrijk:</b> dit is een Bosch-referentie-indicatie. De exacte methode, target, afstand, hoogte en eventuele proefrit moeten voor de exacte voertuigvariant worden gecontroleerd in de voertuig-/Bosch-procedure.</div>
+</section>
+<section class="card voice"><div class="label">Jouw digitale collega</div><div id="orb" class="orb" onclick="toggleVoice()">🎙</div><div id="voiceTitle" class="voiceTitle">PRAAT MET ADAS EXPERT</div><div id="voiceSub" class="voiceSub">Tik één keer en praat normaal</div><div id="chat" class="chat"></div><div id="voiceStatus" class="status">Microfoon blijft actief zolang de sessie loopt.</div></section>
+
+<section class="card"><div class="label">Snelle diagnose</div><div class="actions"><div class="action" onclick="document.getElementById('dtc').focus()"><span>🔧</span><b>Foutcode</b><small>Analyseer een DTC</small></div><div class="action" onclick="pickPhoto()"><span>📷</span><b>Foto</b><small>Camera / melding / opstelling</small></div></div>
+<div style="margin-top:11px"><input id="dtc" placeholder="FOUTCODE BIJV. C1A55"><textarea id="problem" rows="2" style="margin-top:7px" placeholder="Korte omschrijving van de klacht"></textarea><button onclick="diagnose()">🔴 START DIAGNOSE</button><div id="ds" class="status"></div><div id="answer"></div></div></section>
+
+<input id="photoInput" type="file" accept="image/*" capture="environment" onchange="handlePhoto(this)" style="display:none">
+<section class="card"><div class="label">Fotoanalyse</div><div id="photoEmpty" class="status">Nog geen foto toegevoegd.</div><div id="photoBox" class="photoBox"><img id="photoPreview"><div id="photoMeta" class="photoMeta"></div></div><button class="yellow" onclick="pickPhoto()">📷 FOTO TOEVOEGEN</button><button id="photoAnalyzeBtn" class="dark hidden" onclick="analyzePhoto()">🧠 FOTO ANALYSEREN</button><div id="photoStatus" class="status"></div></section>
+
+<div class="warn">⚠️ Diagnosehulp. Controleer kritieke waarden en kalibratieprocedures altijd met actuele fabrikantdocumentatie.</div>
+</main>
+<nav class="nav"><button class="active" onclick="scrollTo(0,0)"><span>⌂</span>Home</button><button onclick="document.getElementById('dtc').scrollIntoView({behavior:'smooth'})"><span>🔧</span>Diagnose</button><button onclick="pickPhoto()"><span>📷</span>Foto</button><button onclick="document.querySelector('.voice').scrollIntoView({behavior:'smooth'})"><span>🎙</span>Expert</button></nav>
+</div>
+<script>
+let vehicleData=null,pc=null,dc=null,stream=null,photoData=null;
+const $=id=>document.getElementById(id);
+
+/* V15: front/rear separated; no TecDoc/API required */
+const BOSCH_WIPERS = [
+  {make:'AUDI', model:/\bA3\b.*SPORTBACK|\bA3\b.*8VA|\bA3\b.*8V/, min:2012, max:2020,
+   front:{set:'A 863 S', setNo:'3 397 007 863', size:'650 + 450 mm',
+          loose:[['AP 26 U','3 397 006 838','650 mm'],['AP 18 U','3 397 006 831','450 mm']]},
+   rear:{code:'A 331 H', no:'3 397 008 713', size:'330 mm'}},
+  {make:'PEUGEOT', model:/\b208\b/, min:2012, max:2019,
+   front:{set:'A 414 S', setNo:'3 397 007 414', size:'650 + 400 mm',
+          loose:[['AP 26 U','3 397 006 838','650 mm'],['AP 16 U','3 397 006 829','400 mm']]},
+   rear:{code:'H 353', no:'3 397 004 631', size:'350 mm'}},
+  {make:'PEUGEOT', model:/\b208\b/, min:2019, max:2035,
+   front:{set:'A 295 S', setNo:'3 397 007 295', size:'600 + 400 mm',
+          loose:[['AP 24 U','3 397 006 837','600 mm'],['AP 16 U','3 397 006 829','400 mm']]},
+   rear:{code:'H 301', no:'3 397 004 629', size:'300 mm'}},
+  {make:'SKODA', model:/\bFABIA\b/, min:2014, max:2021,
+   front:{set:'A 863 S', setNo:'3 397 007 863', size:'650 + 450 mm',
+          loose:[['AP 26 U','3 397 006 838','650 mm'],['AP 18 U','3 397 006 831','450 mm']]},
+   rear:{code:'A 331 H', no:'3 397 008 713', size:'330 mm'}},
+  {make:'SKODA', model:/\bOCTAVIA\b/, min:2013, max:2020,
+   front:{set:'A 863 S', setNo:'3 397 007 863', size:'650 + 450 mm',
+          loose:[['AP 26 U','3 397 006 838','650 mm'],['AP 18 U','3 397 006 831','450 mm']]},
+   rear:{code:'A 331 H', no:'3 397 008 713', size:'330 mm'}},
+  {make:'AUDI', model:/\\bA1\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bA4\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bA5\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bA6\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bA7\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bA8\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ2\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ3\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ4\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ5\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ7\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\bQ8\\b/i, catalogFamily:true},
+  {make:'AUDI', model:/\\be\-\?tron\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\b1\\b\|1\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b2\\b\|2\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b3\\b\|3\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b4\\b\|4\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b5\\b\|5\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b6\\b\|6\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b7\\b\|7\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\b8\\b\|8\s+SERIES/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX1\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX2\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX3\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX4\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX5\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX6\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bX7\\b/i, catalogFamily:true},
+  {make:'BMW', model:/\\bZ4\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bA\[\-\s+\]\?CLASS\\b\|\\bA\[\-\s+\]\?KLASSE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bB\[\-\s+\]\?CLASS\\b\|\\bB\[\-\s+\]\?KLASSE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bC\[\-\s+\]\?CLASS\\b\|\\bC\[\-\s+\]\?KLASSE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bE\[\-\s+\]\?CLASS\\b\|\\bE\[\-\s+\]\?KLASSE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bS\[\-\s+\]\?CLASS\\b\|\\bS\[\-\s+\]\?KLASSE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bCLA\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bGLA\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bGLB\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bGLC\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bGLE\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bGLS\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bV\[\-\s+\]\?CLASS\\b\|\\bVITO\\b/i, catalogFamily:true},
+  {make:'MERCEDES-BENZ', model:/\\bSPRINTER\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bGOLF\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bPOLO\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bPASSAT\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bTIGUAN\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bT\-\?ROC\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bT\-\?CROSS\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bTOURAN\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bSHARAN\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bCADDY\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bTRANSPORTER\\b\|\\bMULTIVAN\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bAMAROK\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bID\\\.\?3\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bID\\\.\?4\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bID\\\.\?5\\b/i, catalogFamily:true},
+  {make:'VOLKSWAGEN', model:/\\bID\\\.\?7\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bFABIA\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bOCTAVIA\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bSUPERB\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bKAMIQ\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bKAROQ\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bKODIAQ\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bSCALA\\b/i, catalogFamily:true},
+  {make:'SKODA', model:/\\bENYAQ\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bIBIZA\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bLEON\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bARONA\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bATECA\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bTARRACO\\b/i, catalogFamily:true},
+  {make:'SEAT', model:/\\bALHAMBRA\\b/i, catalogFamily:true},
+  {make:'CUPRA', model:/\\bLEON\\b/i, catalogFamily:true},
+  {make:'CUPRA', model:/\\bFORmentor\\b/i, catalogFamily:true},
+  {make:'CUPRA', model:/\\bBORN\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bFIESTA\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bFOCUS\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bMONDEO\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bKUGA\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bPUMA\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bECOSPORT\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bS\-\?MAX\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bGALAXY\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bTRANSIT\\b/i, catalogFamily:true},
+  {make:'FORD', model:/\\bRANGER\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bCORSA\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bASTRA\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bINSIGNIA\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bMOKKA\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bGRANDLAND\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bZAFIRA\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bVIVARO\\b/i, catalogFamily:true},
+  {make:'OPEL', model:/\\bCOMBO\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b108\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b208\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b2008\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b308\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b3008\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b408\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b508\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\b5008\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\bPARTNER\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\bEXPERT\\b/i, catalogFamily:true},
+  {make:'PEUGEOT', model:/\\bBOXER\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bC1\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bC3\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bC4\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bC5\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bBERLINGO\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bJUMPY\\b/i, catalogFamily:true},
+  {make:'CITROEN', model:/\\bJUMPER\\b/i, catalogFamily:true},
+  {make:'DS', model:/\\bDS3\\b/i, catalogFamily:true},
+  {make:'DS', model:/\\bDS4\\b/i, catalogFamily:true},
+  {make:'DS', model:/\\bDS7\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bCLIO\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bMEGANE\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bSCENIC\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bCAPTUR\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bKADJAR\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bAUSTRAL\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bARKANA\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bTALISMAN\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bKANGOO\\b/i, catalogFamily:true},
+  {make:'RENAULT', model:/\\bTRAFIC\\b/i, catalogFamily:true},
+  {make:'DACIA', model:/\\bSANDERO\\b/i, catalogFamily:true},
+  {make:'DACIA', model:/\\bDUSTER\\b/i, catalogFamily:true},
+  {make:'DACIA', model:/\\bLOGAN\\b/i, catalogFamily:true},
+  {make:'DACIA', model:/\\bJOGGER\\b/i, catalogFamily:true},
+  {make:'DACIA', model:/\\bSPRING\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bS40\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bS60\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bS80\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bS90\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bV40\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bV60\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bV70\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bV90\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bXC40\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bXC60\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bXC70\\b/i, catalogFamily:true},
+  {make:'VOLVO', model:/\\bXC90\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bAYGO\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bYARIS\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bCOROLLA\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bCAMRY\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bC\-\?HR\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bRAV4\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bLAND\s+CRUISER\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bHILUX\\b/i, catalogFamily:true},
+  {make:'TOYOTA', model:/\\bPROACE\\b/i, catalogFamily:true},
+  {make:'LEXUS', model:/\\bUX\\b/i, catalogFamily:true},
+  {make:'LEXUS', model:/\\bNX\\b/i, catalogFamily:true},
+  {make:'LEXUS', model:/\\bRX\\b/i, catalogFamily:true},
+  {make:'LEXUS', model:/\\bES\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bMICRA\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bJUKE\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bQASHQAI\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bX\-\?TRAIL\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bLEAF\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bARIYA\\b/i, catalogFamily:true},
+  {make:'NISSAN', model:/\\bNOTE\\b/i, catalogFamily:true},
+  {make:'HONDA', model:/\\bJAZZ\\b/i, catalogFamily:true},
+  {make:'HONDA', model:/\\bCIVIC\\b/i, catalogFamily:true},
+  {make:'HONDA', model:/\\bACCORD\\b/i, catalogFamily:true},
+  {make:'HONDA', model:/\\bCR\-\?V\\b/i, catalogFamily:true},
+  {make:'HONDA', model:/\\bHR\-\?V\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\b2\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\b3\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\b6\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\bCX\-3\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\bCX\-30\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\bCX\-5\\b/i, catalogFamily:true},
+  {make:'MAZDA', model:/\\bCX\-60\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bi10\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bi20\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bi30\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bKONA\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bTUCSON\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bSANTA\s+FE\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bIONIQ\\b/i, catalogFamily:true},
+  {make:'HYUNDAI', model:/\\bIONIQ\s+5\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bPICANTO\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bRIO\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bCEED\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bNIRO\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bSPORTAGE\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bSORENTO\\b/i, catalogFamily:true},
+  {make:'KIA', model:/\\bEV6\\b/i, catalogFamily:true},
+  {make:'SUZUKI', model:/\\bSWIFT\\b/i, catalogFamily:true},
+  {make:'SUZUKI', model:/\\bVITARA\\b/i, catalogFamily:true},
+  {make:'SUZUKI', model:/\\bS\-\?CROSS\\b/i, catalogFamily:true},
+  {make:'SUZUKI', model:/\\bIGNIS\\b/i, catalogFamily:true},
+  {make:'MITSUBISHI', model:/\\bASX\\b/i, catalogFamily:true},
+  {make:'MITSUBISHI', model:/\\bOUTLANDER\\b/i, catalogFamily:true},
+  {make:'MITSUBISHI', model:/\\bECLIPSE\s+CROSS\\b/i, catalogFamily:true},
+  {make:'MITSUBISHI', model:/\\bCOLT\\b/i, catalogFamily:true},
+  {make:'SUBARU', model:/\\bIMPREZA\\b/i, catalogFamily:true},
+  {make:'SUBARU', model:/\\bFORESTER\\b/i, catalogFamily:true},
+  {make:'SUBARU', model:/\\bXV\\b/i, catalogFamily:true},
+  {make:'SUBARU', model:/\\bOUTBACK\\b/i, catalogFamily:true},
+  {make:'JEEP', model:/\\bRENEGADE\\b/i, catalogFamily:true},
+  {make:'JEEP', model:/\\bCOMPASS\\b/i, catalogFamily:true},
+  {make:'JEEP', model:/\\bWRANGLER\\b/i, catalogFamily:true},
+  {make:'JEEP', model:/\\bCHEROKEE\\b/i, catalogFamily:true},
+  {make:'JEEP', model:/\\bGRAND\s+CHEROKEE\\b/i, catalogFamily:true},
+  {make:'LAND ROVER', model:/\\bRANGE\s+ROVER\\b/i, catalogFamily:true},
+  {make:'LAND ROVER', model:/\\bEVOQUE\\b/i, catalogFamily:true},
+  {make:'LAND ROVER', model:/\\bDISCOVERY\\b/i, catalogFamily:true},
+  {make:'LAND ROVER', model:/\\bFREELANDER\\b/i, catalogFamily:true},
+  {make:'LAND ROVER', model:/\\bDEFENDER\\b/i, catalogFamily:true},
+  {make:'JAGUAR', model:/\\bXE\\b/i, catalogFamily:true},
+  {make:'JAGUAR', model:/\\bXF\\b/i, catalogFamily:true},
+  {make:'JAGUAR', model:/\\bF\-\?PACE\\b/i, catalogFamily:true},
+  {make:'JAGUAR', model:/\\bE\-\?PACE\\b/i, catalogFamily:true},
+  {make:'PORSCHE', model:/\\bCAYENNE\\b/i, catalogFamily:true},
+  {make:'PORSCHE', model:/\\bMACAN\\b/i, catalogFamily:true},
+  {make:'PORSCHE', model:/\\bPANAMERA\\b/i, catalogFamily:true},
+  {make:'PORSCHE', model:/\\b911\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\b500\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\bPANDA\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\bPUNTO\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\bTIPO\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\bDOBLO\\b/i, catalogFamily:true},
+  {make:'FIAT', model:/\\bDUCATO\\b/i, catalogFamily:true},
+  {make:'ALFA ROMEO', model:/\\bGIULIETTA\\b/i, catalogFamily:true},
+  {make:'ALFA ROMEO', model:/\\bGIULIA\\b/i, catalogFamily:true},
+  {make:'ALFA ROMEO', model:/\\bSTELVIO\\b/i, catalogFamily:true},
+  {make:'ABARTH', model:/\\b500\\b/i, catalogFamily:true},
+  {make:'MASERATI', model:/\\bGHIBLI\\b/i, catalogFamily:true},
+  {make:'MASERATI', model:/\\bLEVANTE\\b/i, catalogFamily:true},
+  {make:'MINI', model:/\\bMINI\\b\|COOPER\|CLUBMAN\|COUNTRYMAN/i, catalogFamily:true},
+  {make:'TESLA', model:/\\bMODEL\s+3\\b/i, catalogFamily:true},
+  {make:'TESLA', model:/\\bMODEL\s+S\\b/i, catalogFamily:true},
+  {make:'TESLA', model:/\\bMODEL\s+X\\b/i, catalogFamily:true},
+  {make:'TESLA', model:/\\bMODEL\s+Y\\b/i, catalogFamily:true},
+  {make:'MG', model:/\\bZS\\b/i, catalogFamily:true},
+  {make:'MG', model:/\\bHS\\b/i, catalogFamily:true},
+  {make:'MG', model:/\\bMG4\\b/i, catalogFamily:true},
+  {make:'MG', model:/\\bMG5\\b/i, catalogFamily:true},
+  {make:'BYD', model:/\\bATTO\s+3\\b/i, catalogFamily:true},
+  {make:'BYD', model:/\\bDOLPHIN\\b/i, catalogFamily:true},
+  {make:'BYD', model:/\\bSEAL\\b/i, catalogFamily:true},
+  {make:'BYD', model:/\\bSEALION\\b/i, catalogFamily:true},
+  {make:'SMART', model:/\\bFORTWO\\b/i, catalogFamily:true},
+  {make:'SMART', model:/\\bFORFOUR\\b/i, catalogFamily:true},
+  {make:'SMART', model:/\\b\#1\\b/i, catalogFamily:true},
+  {make:'SMART', model:/\\b\#3\\b/i, catalogFamily:true}
+];
+
+function boschWipers(v){
+ const make=(v.merk||'').toUpperCase().trim();
+ const model=(v.handelsbenaming||'').toUpperCase().trim();
+ const year=parseInt(String(v.datum_eerste_toelating||'').slice(0,4),10);
+ const exact=BOSCH_WIPERS.find(x=>x.make===make && x.front && x.model.test(model) && (!year || (year>=x.min&&year<=x.max)));
+ if(exact) return {...exact, confidence:'exact'};
+ const broad=BOSCH_WIPERS.find(x=>x.make===make && x.catalogFamily && x.model.test(model));
+ return broad ? {...broad, confidence:'family'} : null;
+}
+
+const COUNTRY_NAMES={NL:'Nederland',DE:'Duitsland',BE:'België',FR:'Frankrijk',GB:'Verenigd Koninkrijk',ES:'Spanje',IT:'Italië',AT:'Oostenrijk',CH:'Zwitserland',LU:'Luxemburg',DK:'Denemarken',SE:'Zweden',NO:'Noorwegen',FI:'Finland',PL:'Polen',CZ:'Tsjechië',PT:'Portugal',IE:'Ierland',US:'Verenigde Staten'};
+function selectedCountry(){const el=document.getElementById('countrySelect');return el?el.value:'NL';}
+function showCountryMode(){
+ const c=selectedCountry();
+ let hint=document.getElementById('foreignHint');
+ const sel=document.getElementById('countrySelect');
+ if(!sel)return;
+ if(!hint){hint=document.createElement('div');hint.id='foreignHint';hint.className='foreignHint';sel.parentElement.parentElement.appendChild(hint);}
+ hint.innerHTML=c==='NL'
+  ? '<b>🇳🇱 Nederlands kenteken</b><br>Voertuiggegevens worden via de bestaande RDW-koppeling opgehaald.'
+  : '<b>🌍 '+COUNTRY_NAMES[c]+'</b><br>Voor een buitenlandse auto is een officiële voertuigregister-bron nodig. Gebruik bij voorkeur VIN of vul merk, model en bouwjaar in. De app verzint geen voertuiggegevens.';
+}
+document.addEventListener('DOMContentLoaded',()=>{const c=document.getElementById('countrySelect');if(c)c.addEventListener('change',showCountryMode);showCountryMode();});
+
+const BOSCH_CAL_DATA=[
+ {make:'VOLKSWAGEN',target:'VW Group target family; exact target is vehicle-specific',camera:'Front camera: Bosch/VW Group target family',radar:'Front radar: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'Use vehicle-specific Bosch/ESI[tronic] procedure; DAS 3000 alignment'},
+ {make:'AUDI',target:'VW Group target family where applicable; exact target is vehicle-specific',camera:'Front camera: vehicle-dependent',radar:'Front radar: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'Vehicle-specific Bosch/ESI[tronic] procedure'},
+ {make:'SEAT',target:'VW Group target family where applicable; exact target is vehicle-specific',camera:'Front camera: vehicle-dependent',radar:'Front radar: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'Vehicle-specific Bosch/ESI[tronic] procedure'},
+ {make:'SKODA',target:'VW Group target family where applicable; exact target is vehicle-specific',camera:'Front camera: vehicle-dependent',radar:'Front radar: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'Vehicle-specific Bosch/ESI[tronic] procedure'},
+ {make:'MERCEDES-BENZ',target:'Mercedes Type 1 / vehicle-specific target',camera:'Front camera: vehicle-dependent',radar:'Front radar: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'DYNAMISCH'},method:'Vehicle-specific Bosch/ESI[tronic] procedure'},
+ {make:'TOYOTA',target:'Toyota Type 1/2/3 target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'LEXUS',target:'Toyota/Lexus target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'HONDA',target:'Honda Type 1/3 target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'SUBARU',target:'Subaru Type 2/3 target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',coverage:{camera:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'SUZUKI',target:'Suzuki target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'MITSUBISHI',target:'Mitsubishi Type 1 target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'MAZDA',target:'Mazda Type 1/2 target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'HYUNDAI',target:'Kia/Hyundai target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',coverage:{camera:'STATISCH',frontRadar:'STATISCH'},method:'DAS 3000 + vehicle-specific procedure'},
+ {make:'KIA',target:'Kia/Hyundai target family; exact target depends on vehicle',camera:'Front camera: vehicle-dependent',radar:'CTA 120 may support front/rear radar',method:'DAS 3000 + vehicle-specific procedure'}
+];
+function updateCalibrationPanel(d){
+ const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val||'Niet bekend';};
+ const mode=(id,val)=>{const e=document.getElementById(id);if(e){e.textContent=val;e.className='modeTag '+(String(val).includes('DYNAMISCH')?'dynamic':String(val).includes('STATISCH')?'static':'unknown');}};
+ if(!d){
+  ['calCamera','calFrontRadar','calRearRadar','calCamera360'].forEach(x=>set(x,'Onbekend'));
+  ['calCameraMode','calFrontRadarMode','calRearRadarMode','calCamera360Mode'].forEach(x=>mode(x,'—'));
+  set('calOverallMode','Nog niet bepaald');set('calModeNote','Voer eerst kenteken of VIN in.');
+  set('calTarget','Nog niet bepaald');set('calAlignment','Nog niet bepaald');set('calMethod','Nog niet bepaald');set('calChecks','Voer eerst een voertuig in.');return;
+ }
+ const make=(d.merk||'').toUpperCase().trim();
+ const hit=BOSCH_CAL_DATA.find(x=>make.includes(x.make));
+ const coverage=hit?.coverage||{};
+ const cameraMode=coverage.camera||'VOERTUIGSPECIFIEK', frontMode=coverage.frontRadar||'VOERTUIGSPECIFIEK', rearMode=coverage.rearRadar||'VOERTUIGSPECIFIEK', cam360Mode=coverage.camera360||'VOERTUIGSPECIFIEK';
+ const modes=[cameraMode,frontMode,rearMode,cam360Mode];
+ let overall='VOERTUIGSPECIFIEK';
+ if(modes.includes('STATISCH + DYNAMISCH')|| (modes.includes('STATISCH')&&modes.includes('DYNAMISCH'))) overall='STATISCH + DYNAMISCH';
+ else if(modes.includes('STATISCH')) overall='STATISCH';
+ else if(modes.includes('DYNAMISCH')) overall='DYNAMISCH';
+ set('calCamera',hit?.camera||'Voertuigafhankelijk — niet automatisch bevestigd');
+ set('calFrontRadar',hit?.radar||'Voertuigafhankelijk — niet automatisch bevestigd');
+ set('calRearRadar',hit?.rearRadar||'Niet automatisch bevestigd');
+ set('calCamera360','Voertuig-/uitvoeringafhankelijk');
+ mode('calCameraMode',cameraMode);mode('calFrontRadarMode',frontMode);mode('calRearRadarMode',rearMode);mode('calCamera360Mode',cam360Mode);
+ set('calOverallMode',overall);
+ set('calModeNote',overall==='STATISCH'?'Target/opstelling nodig; voertuig staat stil tijdens de kalibratie.':overall==='DYNAMISCH'?'Service track/proefrit kan vereist zijn; volg de exacte voertuigprocedure.':overall==='STATISCH + DYNAMISCH'?'Eerst statische voorbereiding/kalibratie en daarna dynamische procedure indien voorgeschreven.':'Bosch vereist voertuigvariant-specifieke controle voordat de methode definitief wordt gekozen.');
+ document.getElementById('calReadyBadge').textContent=hit?'VOERTUIG GEDETECTEERD':'GEGEVENS CONTROLEREN';
+ set('calTarget',hit?.target||'Geen betrouwbare Bosch-targetkoppeling beschikbaar');
+ set('calAlignment',hit?.method||'Voertuigspecifieke Bosch-uitlijning vereist');
+ set('calMethod','Voertuigspecifieke Bosch/ESI[tronic]-procedure');
+ const steps=[
+ '1. Controleer voertuigvariant, bandenspanning en belading volgens fabrikant.',
+ '2. Controleer stuurstand, wieluitlijning en voertuigpositie.',
+ '3. Lees foutcodes uit en voer pre-scan uit.',
+ overall.includes('STATISCH')?'4. Zet Bosch DAS 3000 en het juiste target/hulpmiddel klaar en controleer centrering.':'4. Bereid de dynamische service-track/proefrit voor volgens de voertuigprocedure.',
+ overall.includes('STATISCH')&&overall.includes('DYNAMISCH')?'5. Voer de statische procedure uit en daarna de dynamische procedure indien voorgeschreven.':overall==='STATISCH'?'5. Voer de statische kalibratie uit met de voertuig-specifieke afstanden/hoogtes.':overall==='DYNAMISCH'?'5. Voer de dynamische kalibratie/proefrit uit volgens de voertuigprocedure.':'5. Bepaal de definitieve methode in de voertuig-specifieke Bosch-procedure.',
+ '6. Controleer het kalibratieresultaat, voer post-scan uit en documenteer de uitlijning.'
+ ];
+ set('calChecks',steps.join(' '));
+}
+async function lookup(){
+  const vin=($('vinInput')?.value||'').replace(/\s/g,'').toUpperCase();
+  const country=selectedCountry();
+  $('vs').textContent='Voertuig controleren...';
+
+  try{
+    if(vin){
+      if(!/^[A-HJ-NPR-Z0-9]{17}$/.test(vin)){
+        throw Error('VIN moet exact 17 geldige tekens bevatten.');
+      }
+      $('vs').textContent='VIN wordt opgezocht...';
+      const r=await fetch('/api/vin?vin='+encodeURIComponent(vin)+'&country='+encodeURIComponent(country));
+      const d=await r.json();
+      if(!r.ok)throw Error(d.error||'VIN niet gevonden.');
+      renderVehicle(d,'VIN');
+      return;
+    }
+
+    const p=$('plate').value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+    if(!p)throw Error('Vul een kenteken of een VIN in.');
+
+    if(country!=='NL'){
+      showCountryMode();
+      throw Error('Voor dit buitenlandse kenteken is nog geen officiële registerkoppeling beschikbaar. Gebruik het 17-teken VIN.');
+    }
+
+    $('vs').textContent='Kenteken wordt opgezocht...';
+    const r=await fetch('/api/vehicle?kenteken='+encodeURIComponent(p));
+    const d=await r.json();
+    if(!r.ok)throw Error(d.error||'Kenteken niet gevonden.');
+    renderVehicle(d,'RDW');
+  }catch(e){
+    $('vs').textContent='Fout: '+e.message;
+  }
+}
+
+function renderVehicle(d,source){
+  vehicleData=d;
+  $('vehicle').classList.remove('hidden');
+  $('vtitle').textContent=(d.merk||'Onbekend')+' '+(d.handelsbenaming||d.model||'');
+  $('vsub').textContent=source==='VIN' ? '✓ VIN-gegevens geladen' : '✓ RDW-gegevens geladen';
+  $('vplate').textContent=d.kenteken||d.vin||'VIN';
+  $('brand').textContent=d.merk||'-';
+  $('model').textContent=d.handelsbenaming||d.model||'-';
+  $('first').textContent=d.datum_eerste_toelating||d.modeljaar||'-';
+  $('kind').textContent=d.voertuigsoort||'-';
+  $('fuel').textContent=d.brandstof||'-';
+  $('body').textContent=d.carrosserie||'-';
+  $('mass').textContent=d.massa_ledig_voertuig?d.massa_ledig_voertuig+' kg':'-';
+  $('apk').textContent=d.vervaldatum_apk||'-';
+  $('engine').textContent=d.cilinderinhoud?d.cilinderinhoud+' cc':(d.motor||'-');
+  $('power').textContent=d.vermogen||'-';
+  $('doors').textContent=d.aantal_deuren||'-';
+  $('type').textContent=d.voertuigsoort||'-';
+
+  const bw=boschWipers(d);
+  if(bw){
+    let rows='<div class="fitTitle">'+(d.merk||'')+' '+(d.handelsbenaming||d.model||'')+'</div>';
+    if(bw.confidence==='exact' && bw.front){
+      const f=bw.front;
+      rows+='<div class="wiperCategory">🟡 VOORWISSERS — COMPLETE SET</div><div class="wiperRow"><div><b>'+f.set+'</b><small>'+f.size+' · Bosch nr. '+f.setNo+'</small></div><div class="wiperCode">✓ EXACT</div></div>';
+      if(f.loose?.length){rows+='<div class="wiperCategory">🟡 VOORWISSERS — LOS</div>';f.loose.forEach(x=>rows+='<div class="wiperRow"><div><b>'+x[0]+'</b><small>'+x[2]+' · Bosch nr. '+x[1]+'</small></div><div class="wiperCode">✓</div></div>');}
+      if(f.rear) rows+='<div class="wiperCategory">🔵 ACHTERWISSER — APART</div><div class="wiperRow"><div><b>'+f.rear.code+'</b><small>'+f.rear.size+' · Bosch nr. '+f.rear.no+'</small></div><div class="wiperCode">✓ EXACT</div></div>';
+      else rows+='<div class="wiperCategory">🔵 ACHTERWISSER</div><div class="status"><small>Geen achterwisser opgenomen voor deze exacte toepassing.</small></div>';
+    }else{
+      rows+='<div class="wiperCategory">🟡 VOORWISSERS — MODEL GEVONDEN</div><div class="status"><b>Bosch-toepassing voor dit model gevonden.</b><br><small>Exacte toepassing hangt af van bouwjaar, carrosserie en uitvoering. Geen onderdeelnummer gegokt.</small></div>';
+      rows+='<div class="wiperCategory">🔵 ACHTERWISSER — APART</div><div class="status"><small>Exacte achterwisser wordt alleen getoond wanneer de voertuigvariant exact gekoppeld is.</small></div>';
+    }
+    rows+='<div class="why">🟡 VOORWISSERS &nbsp;&nbsp; 🔵 ACHTERWISSER. Exacte nummers alleen bij betrouwbare voertuigmatch.</div>';
+    $('boschRows').innerHTML=rows;
+  }else{
+    $('boschRows').innerHTML='<div class="status"><b>Geen Bosch-modelmatch gevonden.</b><br><small>Dit model staat niet in de lokale Bosch-modelindex.</small></div>';
+  }
+  $('vs').textContent='✓ Voertuig gevonden';
+  updateCalibrationPanel(d);
+}
+async function diagnose(){$('ds').textContent='AI analyseert...';$('answer').innerHTML='';try{const r=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({vehicle:vehicleData,dtc:$('dtc').value,problem:$('problem').value})});const d=await r.json();if(!r.ok)throw Error(d.error);renderAnswer(d.answer);$('ds').textContent='✓ Analyse klaar'}catch(e){$('ds').textContent='Fout: '+e.message}}
+function renderAnswer(t){
+  let d;
+  try{ d=typeof t==='string'?JSON.parse(t):t; }catch(e){ d=null; }
+  if(!d || !Array.isArray(d.stappen)){
+    $('answer').innerHTML='<div class="result"><div class="resultHead"><span>DIAGNOSE</span><span class="badge">AI</span></div><div class="resultText">'+esc(String(t))+'</div></div>';
+    return;
+  }
+  let html='';
+  if(d.kern) html+='<div class="summary"><b>🎯 EERST DIT</b><div>'+esc(d.kern)+'</div></div>';
+  html+='<div class="stepList">';
+  d.stappen.slice(0,7).forEach((x,i)=>{
+    html+='<div class="step"><div class="stepNo">'+(i+1)+'</div><div><div class="stepTitle">'+esc(x.titel||'Controle')+'</div><div class="stepCheck">'+esc(x.check||'Controleer volgens fabrikantprocedure.')+'</div>'+(x.waarom?'<div class="why">Waarom: '+esc(x.waarom)+'</div>':'')+(x.als_fout?'<div class="measure"><b>ALS DIT FOUT IS:</b> '+esc(x.als_fout)+'</div>':'')+'</div></div>';
+  });
+  html+='</div>';
+  if(d.volgende_stap) html+='<div class="result next"><div class="resultHead"><span>VOLGENDE STAP</span><span class="badge">ACTIE</span></div><div class="resultText">'+esc(d.volgende_stap)+'</div></div>';
+  if(d.klaar) html+='<div class="result"><div class="resultHead"><span>KLAAR?</span><span class="badge">CHECK</span></div><div class="resultText">'+esc(d.klaar)+'</div></div>';
+  if(d.veiligheid) html+='<div class="status">⚠️ '+esc(d.veiligheid)+'</div>';
+  $('answer').innerHTML=html;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function pickPhoto(){$('photoInput').click()}
+function handlePhoto(input){const file=input.files?.[0];if(!file)return;$('photoStatus').textContent='Foto wordt klaargemaakt...';const img=new Image();const reader=new FileReader();reader.onload=e=>{img.onload=()=>{const max=1280,scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);photoData=c.toDataURL('image/jpeg',.82);$('photoPreview').src=photoData;$('photoBox').style.display='block';$('photoEmpty').textContent='✓ Foto opgeslagen voor analyse';$('photoMeta').textContent=Math.round(c.width)+' × '+Math.round(c.height)+' px';$('photoAnalyzeBtn').classList.remove('hidden');$('photoStatus').textContent='✓ Foto staat klaar. Tik op FOTO ANALYSEREN.';localStorage.setItem('adas_photo_preview',photoData)};img.src=e.target.result};reader.readAsDataURL(file)}
+async function analyzePhoto(){if(!photoData){$('photoStatus').textContent='Maak eerst een foto.';return}$('photoStatus').textContent='AI bekijkt de foto...';try{const r=await fetch('/api/analyze-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:photoData,context:$('problem').value})});const d=await r.json();if(!r.ok)throw Error(d.error);renderAnswer(d.answer);$('photoStatus').textContent='✓ Foto geanalyseerd'}catch(e){$('photoStatus').textContent='Fout: '+e.message}}
+function restorePhoto(){const p=localStorage.getItem('adas_photo_preview');if(p){photoData=p;$('photoPreview').src=p;$('photoBox').style.display='block';$('photoEmpty').textContent='✓ Vorige foto beschikbaar';$('photoAnalyzeBtn').classList.remove('hidden')}}
+let recognition=null, speaking=false, voiceBusy=false;
+function toggleVoice(){
+  if(speaking){ stopVoice(); return; }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    $('voiceStatus').textContent='Deze browser ondersteunt geen spraakherkenning. Gebruik Chrome op Android.';
+    return;
+  }
+  recognition=new SR();
+  recognition.lang='nl-NL';
+  recognition.continuous=true;
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+  recognition.onstart=()=>{
+    speaking=true;$('orb').classList.add('active');$('voiceTitle').textContent='IK LUISTER';$('voiceStatus').textContent='🟡 Luisteren... Praat normaal en druk opnieuw om te stoppen.';
+  };
+  recognition.onresult=async(e)=>{
+    const last=e.results[e.results.length-1];
+    if(!last.isFinal)return;
+    const text=last[0].transcript.trim();
+    if(!text)return;
+    addChat('Jij',text,'me');
+    await voiceAsk(text);
+  };
+  recognition.onerror=(e)=>{
+    if(e.error==='not-allowed'||e.error==='service-not-allowed'){
+      $('voiceStatus').textContent='Microfoontoegang geweigerd. Geef Chrome toegang tot de microfoon.';
+      stopVoice();
+    }else if(e.error==='no-speech'){
+      $('voiceStatus').textContent='🟡 Ik luister nog steeds...';
+    }else{
+      $('voiceStatus').textContent='Spraakfout: '+e.error;
+    }
+  };
+  recognition.onend=()=>{
+    if(speaking && !voiceBusy){
+      try{recognition.start()}catch{}
+    }
+  };
+  try{recognition.start()}catch(e){$('voiceStatus').textContent='Microfoon kon niet starten: '+e.message;stopVoice();}
+}
+async function voiceAsk(text){
+  voiceBusy=true;
+  $('voiceStatus').textContent='🧠 Even nadenken...';
+  try{
+    const r=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      vehicle:vehicleData,
+      dtc:$('dtc').value||text.match(/[A-Z]\d[A-Z0-9]{3,5}/i)?.[0]||'',
+      problem:(($('problem').value||'')+' '+text).trim()
+    })});
+    const d=await r.json();
+    if(!r.ok)throw Error(d.error);
+    let spoken='';
+    try{
+      const j=JSON.parse(d.answer);
+      spoken=(j.kern||'')+'. '+(j.stappen?.[0]?.titel||'')+'. '+(j.stappen?.[0]?.check||'')+'. '+(j.volgende_stap||'');
+      renderAnswer(d.answer);
+    }catch{spoken=d.answer;renderAnswer(d.answer)}
+    addChat('ADAS Expert',spoken,'expert');
+    speakText(spoken);
+    $('voiceStatus').textContent='🟡 Antwoord gegeven. Ik luister weer...';
+  }catch(e){
+    $('voiceStatus').textContent='AI-fout: '+e.message;
+  }finally{voiceBusy=false;}
+}
+function speakText(text){
+  if(!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='nl-NL';u.rate=.96;u.pitch=1;
+  speechSynthesis.speak(u);
+}
+function stopVoice(){
+  speaking=false;voiceBusy=false;
+  if(recognition){try{recognition.onend=null;recognition.stop()}catch{}recognition=null}
+  if('speechSynthesis' in window)speechSynthesis.cancel();
+  $('orb').classList.remove('active');
+  $('voiceTitle').textContent='PRAAT MET ADAS EXPERT';
+  $('voiceStatus').textContent='Spraak gestopt.';
+}
+function addChat(who,text,cls){const d=document.createElement('div');d.className='bubble '+cls;d.textContent=who+': '+text;$('chat').appendChild(d);$('chat').scrollTop=$('chat').scrollHeight}
+function stopVoice(){if(dc)dc.close();if(pc)pc.close();if(stream)stream.getTracks().forEach(t=>t.stop());pc=dc=stream=null;$('orb').classList.remove('active');$('voiceTitle').textContent='PRAAT MET ADAS EXPERT';$('voiceStatus').textContent='Spraak gestopt.'}
+restorePhoto();
+</script></body></html>

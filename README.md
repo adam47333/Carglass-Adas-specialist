@@ -1,1 +1,0 @@
-ADAS Expert v4 - dark red/yellow UI, fixed photo handling/preview/storage, structured AI diagnosis, realtime voice endpoint.

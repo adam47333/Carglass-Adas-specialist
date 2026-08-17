@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070707">
+<title>ADAS Expert</title>
+<style>
+:root{--bg:#050505;--panel:#0d0d0d;--panel2:#151515;--red:#e30613;--redDark:#a9000d;--yellow:#ffd500;--yellowSoft:#fff0a3;--muted:#a3a3a3;--line:#292929;--green:#5cff91}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+body{min-height:100vh}
+.app{max-width:620px;margin:auto;min-height:100vh}
+header{padding:16px;background:linear-gradient(180deg,#080808 0%,#0b0b0b 100%);border-bottom:3px solid var(--red);position:sticky;top:0;z-index:20}
+.logo{font-size:24px;font-weight:1000;letter-spacing:.12em}.logo span{color:var(--red)}
+.tag{color:var(--yellow);font-size:9px;font-weight:1000;letter-spacing:.16em;margin-top:3px}
+.online{float:right;margin-top:-23px;color:var(--green);font-size:11px;font-weight:900}
+main{padding:14px 12px 100px}
+.screen{display:none}.screen.active{display:block}
+.hero{position:relative;overflow:hidden;border:1px solid #3a3a3a;border-top:4px solid var(--yellow);border-radius:18px;padding:24px 18px;background:linear-gradient(145deg,#171717,#0a0a0a);box-shadow:0 18px 45px #0008}
+.hero:after{content:"";position:absolute;right:-15px;top:20px;width:170px;height:120px;opacity:.09;background:linear-gradient(55deg,transparent 48%,#fff 49%,transparent 51%),linear-gradient(-35deg,transparent 48%,#fff 49%,transparent 51%);pointer-events:none}
+.kicker{font-size:9px;color:var(--yellow);font-weight:1000;letter-spacing:.16em}
+h1{font-size:30px;line-height:1;margin:8px 0}.red{color:var(--red)}
+p{color:#aaa;line-height:1.5;font-size:12px}
+.card{margin-top:12px;border:1px solid #303030;border-radius:15px;padding:14px;background:linear-gradient(145deg,#121212,#0d0d0d)}
+.label{font-size:9px;color:var(--yellow);font-weight:1000;letter-spacing:.15em;margin-bottom:8px}
+input,select,textarea{width:100%;background:#171717;border:1px solid #383838;color:#fff;border-radius:11px;padding:12px;font:inherit;outline:none}
+input{text-transform:uppercase;font-weight:900;text-align:center;letter-spacing:.08em}
+select{font-size:12px}
+button{width:100%;border:0;border-radius:10px;padding:13px;margin-top:9px;background:linear-gradient(180deg,#ef0a18,#c8000e);color:#fff;font-weight:1000;box-shadow:0 5px 14px #e3061326}
+button.yellow{background:var(--yellow);color:#080808;box-shadow:0 5px 14px #ffd50025}
+button.dark{background:#181818;border:1px solid #383838}
+.status{font-size:11px;color:#999;text-align:center;margin-top:8px;min-height:16px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px;position:sticky;top:67px;z-index:15;background:#070707;padding:6px 0}
+.tabs button{margin:0;padding:10px 3px;background:#151515;border:1px solid #2d2d2d;font-size:10px}
+.tabs button.active{border-color:var(--red);background:linear-gradient(180deg,#3a0b10,#21080b);box-shadow:inset 0 -3px 0 var(--yellow)}
+.vehicleHead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.vehicleName{font-size:19px;font-weight:1000}.plate{background:linear-gradient(#fff,#e7e7e7);color:#111;border-radius:5px;padding:5px 8px;font-size:11px;font-weight:1000;border:2px solid var(--yellow)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.stat{background:#151515;border:1px solid #2d2d2d;border-radius:10px;padding:9px}.stat small{display:block;color:#777;font-size:8px;font-weight:900;text-transform:uppercase}.stat b{display:block;font-size:12px;margin-top:3px}
+.bigStatus{border-radius:13px;padding:13px;margin-top:10px;background:#151515;border:1px solid #383838;border-left:4px solid var(--yellow)}.bigStatus strong{display:block;font-size:14px}.bigStatus span{font-size:10px;color:#aaa}
+.list{margin:8px 0 0;padding:0;list-style:none}.list li{padding:10px 0;border-bottom:1px solid #252525;font-size:12px}.list li:last-child{border-bottom:0}
+.helpGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.helpGrid button{margin:0;padding:12px 5px;background:#171717;border:1px solid #383838}.helpGrid button:active{border-color:var(--yellow)}
+.preview{display:none;margin-top:10px}.preview img{width:100%;border-radius:12px}
+#helpResult{color:#bbb;font-size:11px;margin-top:10px;line-height:1.5}.aiBlock{margin-top:10px;padding:11px;border:1px solid #2e2e2e;border-radius:11px;background:#141414}.aiBlock h3{margin:0 0 6px;color:#ffd500;font-size:10px;letter-spacing:.08em}.aiStep{padding:9px 0;border-bottom:1px solid #282828}.aiStep:last-child{border-bottom:0}.aiStep b{color:#fff}.aiStep small{display:block;color:#aaa;margin-top:3px;line-height:1.45}.aiNext{border-left:4px solid #e30613}.aiDone{border-left:4px solid #5cff91}
+@media(max-width:420px){h1{font-size:26px}.tabs button{font-size:9px}}
+</style>
+<style>
+#voice{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#helpResult{min-height:18px}
+</style></head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">ADAS <span>EXPERT</span></div>
+  <div class="tag">SMART ADAS DIAGNOSTICS</div><div style="height:3px;width:54px;background:linear-gradient(90deg,var(--red) 0 70%,var(--yellow) 70%);margin-top:8px;border-radius:4px"></div>
+  <div class="online">● ONLINE</div>
+</header>
+
+<main>
+<section id="start" class="screen active">
+  <div class="hero">
+    <div class="kicker">ADAS EXPERT • PROFESSIONAL ADAS</div>
+    <h1>Ruit vervangen?<br><span class="red">Kalibratie klaar.</span></h1>
+    <p>Voer eerst het kenteken of VIN in. Daarna toont de app alleen de informatie van dit voertuig.</p>
+  </div>
+
+  <div class="card">
+    <div class="label">VOERTUIG OPZOEKEN</div>
+    <input id="plate" maxlength="10" placeholder="KENTEKEN">
+    <select id="country">
+      <option value="NL">🇳🇱 Nederland</option>
+      <option value="DE">🇩🇪 Duitsland</option>
+      <option value="BE">🇧🇪 België</option>
+      <option value="FR">🇫🇷 Frankrijk</option>
+      <option value="GB">🇬🇧 Verenigd Koninkrijk</option>
+      <option value="ES">🇪🇸 Spanje</option>
+      <option value="IT">🇮🇹 Italië</option>
+      <option value="AT">🇦🇹 Oostenrijk</option>
+      <option value="CH">🇨🇭 Zwitserland</option>
+      <option value="LU">🇱🇺 Luxemburg</option>
+    </select>
+    <div style="text-align:center;color:#666;font-size:10px;margin:9px">— OF VIN —</div>
+    <input id="vin" maxlength="17" placeholder="VIN / CHASSISNUMMER">
+    <button id="search">🔎 VOERTUIG OPHALEN</button>
+    <div id="status" class="status"></div>
+  </div>
+</section>
+
+<section id="vehicle" class="screen">
+  <div class="tabs">
+    <button data-tab="vehicle" class="active">🚗 AUTO</button>
+    <button data-tab="cal">🎯 KALIBRATIE</button>
+    <button data-tab="wipers">🧽 WISSERS</button>
+    <button data-tab="help">🆘 HULP</button>
+  </div>
+
+  <div id="tabVehicle">
+    <div class="card">
+      <div class="vehicleHead"><div class="vehicleName" id="name">—</div><div class="plate" id="plateOut">—</div></div>
+      <div class="grid" id="facts"></div><div class="vehicleDataNote">Gegevens worden uitsluitend getoond wanneer ze door de gebruikte voertuigbron beschikbaar zijn. Ontbrekende gegevens worden niet ingevuld of verzonnen.</div>
+    </div>
+  </div>
+
+  <div id="tabCal" class="card" style="display:none">
+    <div class="label">BOSCH ADAS • KALIBRATIE</div>
+    <div class="bigStatus"><strong id="calType">Niet bepaald</strong><span>Kalibratietype wordt alleen ingevuld wanneer betrouwbare voertuig-/systeemgegevens dit ondersteunen.</span></div>
+    <ul class="list">
+      <li>📷 Frontcamera: <b>controleer aanwezig systeem</b></li>
+      <li>📡 Front radar: <b>controleer aanwezig systeem</b></li>
+      <li>🎯 Bosch target/hulpmiddel: <b>volgens Bosch-procedure</b></li>
+      <li>📏 Uitlijning: <b>eerst voertuiggeometrie controleren</b></li>
+      <li>⚠️ Exacte procedure: <b>niet verzinnen; voertuigvariant bevestigen</b></li>
+    </ul>
+  </div>
+
+  <div id="tabWipers" class="card" style="display:none">
+    <div class="label">BOSCH RUITENWISSERS</div>
+    <div id="wiperResult" class="bigStatus"><strong>Wissers worden gecontroleerd…</strong><span>Voor en achter worden afzonderlijk gezocht. Geen gokmatches.</span></div>
+  </div>
+
+  <div id="tabHelp" class="card" style="display:none">
+    <div class="label">HULP BIJ PROBLEEM</div>
+    <p>Maak een foto, voer een foutcode in of spreek het probleem in.</p>
+    <div class="helpGrid">
+      <button id="photo">📷 FOTO</button>
+      <button id="voice">🎙️ SPRAAK</button>
+      <button id="code">⌨️ FOUTCODE</button>
+    </div>
+    <input id="file" type="file" accept="image/*" capture="environment" hidden>
+    <input id="codeInput" style="display:none;margin-top:9px" placeholder="Bijv. C1A55 / U0235">
+    <textarea id="helpText" rows="4" placeholder="Probleemomschrijving..."></textarea>
+    <div id="preview" class="preview"><img id="photoPreview"></div>
+    <button id="analyze" class="yellow">🤖 ANALYSEER HULP</button>
+    <div id="helpResult"></div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let currentVehicle=null;
+
+function showTab(name){
+  ['vehicle','cal','wipers','help'].forEach(x=>{
+    const el=$('tab'+(x==='vehicle'?'Vehicle':x==='cal'?'Cal':x==='wipers'?'Wipers':'Help'));
+    if(el) el.style.display=x===name?'block':'none';
+  });
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+function val(v){return v!==undefined && v!==null && String(v).trim()!==''?String(v):'Niet bekend'}
+
+async function loadWipers(v){
+  const box=$('wiperResult');
+  box.innerHTML='<strong>Wissers worden gecontroleerd…</strong><span>Voor en achter worden afzonderlijk gecontroleerd.</span>';
+  try{
+    const qs=new URLSearchParams({merk:v.merk||'',model:v.model||'',handelsbenaming:v.handelsbenaming||'',bouwjaar:v.bouwjaar||'',modeljaar:v.modeljaar||''});
+    const r=await fetch('/api/wipers?'+qs.toString());
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||'Wisserdatabase fout');
+    if(!d.found){
+      box.innerHTML='<strong>Geen bevestigde Bosch-match in de lokale database</strong><span>Ik vul niets in op basis van een gok. Voeg een betrouwbare Bosch-toepassingsbron toe om dit voertuig exact te koppelen.</span>';
+      return;
+    }
+    const section=(title,items)=>items.length?`<div style="margin-top:10px"><div style="color:var(--yellow);font-weight:1000;font-size:11px;letter-spacing:.08em">${title}</div>${items.map(x=>`<div style="padding:9px 0;border-bottom:1px solid #282828"><b>${x.code}</b><br><span style="color:#aaa;font-size:10px">Bosch ${x.part}${x.length?' • '+x.length:''}${x.type?' • '+x.type:''}</span></div>`).join('')}</div>`:'';
+    box.innerHTML=section('VOORWISSERS',d.front)+section('ACHTERWISSER',d.rear)+`<span style="display:block;margin-top:10px">Bron: ${d.source}. Matchniveau: ${d.confidence==='exact-model-generation'?'model + generatie':'Bosch-catalogus modelmatch; exacte variant/jaar controleren'}.</span><a href="${d.sourceUrl||'https://www.boschwiperblades.com/'}" target="_blank" rel="noopener" style="display:block;margin-top:8px;color:var(--yellow);font-weight:900">Open Bosch voertuigzoeker →</a>`;
+  }catch(e){box.innerHTML='<strong>Wisserdatabase niet beschikbaar</strong><span>'+String(e.message||e)+'</span>'}
+}
+
+function renderVehicle(v){
+  currentVehicle=v;
+  $('name').textContent=[v.merk,v.handelsbenaming||v.model].filter(Boolean).join(' ')||'Voertuig';
+  $('plateOut').textContent=v.kenteken||'VIN';
+
+  const rows=[
+    ['Merk',v.merk],
+    ['Model',v.handelsbenaming||v.model],
+    ['Type',v.type],
+    ['Variant',v.variant],
+    ['Uitvoering',v.uitvoering],
+    ['Bouwjaar',v.bouwjaar||v.modeljaar],
+    ['Eerste toelating',v.datum_eerste_toelating||v.firstRegistration],
+    ['Typeaanduiding',v.typeaanduiding||v.typecode],
+    ['Fabrikant intern model',v.fabrikant_intern_model],
+    ['Brandstof',v.brandstof],
+    ['Aandrijving',v.aandrijving],
+    ['Vermogen',v.vermogen],
+    ['Cilinderinhoud',v.cilinderinhoud||v.engineDisplacement],
+    ['Motorcode',v.motorcode],
+    ['Motor',v.motor||v.engineModel],
+    ['Carrosserie',v.carrosserie],
+    ['Massa',v.massa_ledig_voertuig],
+    ['Deuren',v.aantal_deuren],
+    ['Zitplaatsen',v.aantal_zitplaatsen],
+    ['Wielbasis',v.wielbasis],
+    ['Lengte',v.lengte],
+    ['Breedte',v.breedte],
+    ['Hoogte',v.hoogte],
+    ['APK',v.vervaldatum_apk]
+  ];
+
+  $('facts').innerHTML=rows.map(r=>`<div class="stat"><small>${r[0]}</small><b>${val(r[1])}</b></div>`).join('');
+
+  $('calType').textContent=v.kalibratietype||'Niet bepaald';
+  loadWipers(v);
+  showTab('vehicle');
+  $('start').classList.remove('active');
+  $('vehicle').classList.add('active');
+  $('status').textContent='';
+}
+
+async function lookup(){
+  const country=$('country').value;
+  const plate=$('plate').value.trim();
+  const vin=$('vin').value.trim();
+  $('status').textContent='Gegevens ophalen…';
+
+  try{
+    let url='';
+    if(vin) url='/api/vin?vin='+encodeURIComponent(vin);
+    else if(country==='NL' && plate) url='/api/vehicle?kenteken='+encodeURIComponent(plate);
+    else throw new Error('Voor dit land is in deze versie geen betrouwbare kentekenbron gekoppeld. Gebruik een VIN.');
+    const r=await fetch(url);
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||'Voertuig niet gevonden.');
+    renderVehicle(data);
+  }catch(e){$('status').textContent=e.message||'Opzoeken mislukt.'}
+}
+$('search').onclick=lookup;
+$('plate').onkeydown=e=>{if(e.key==='Enter')lookup()};
+$('vin').onkeydown=e=>{if(e.key==='Enter')lookup()};
+
+$('photo').onclick=()=>$('file').click();
+$('file').onchange=e=>{
+  const f=e.target.files?.[0]; if(!f)return;
+  $('photoPreview').src=URL.createObjectURL(f); $('preview').style.display='block';
+};
+$('code').onclick=()=>{
+  $('codeInput').style.display=$('codeInput').style.display==='none'?'block':'none';
+  $('codeInput').focus();
+};
+let recognition=null;
+let listening=false;
+let micStream=null;
+
+async function requestMicPermission(){
+  if(!navigator.mediaDevices?.getUserMedia) return true;
+  try{
+    micStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    micStream.getTracks().forEach(t=>t.stop());
+    return true;
+  }catch(e){
+    $('helpResult').textContent='Microfoon geen toegang. Geef Chrome toestemming via het slotje 🔒 naast de website → Microfoon → Toestaan en probeer opnieuw.';
+    return false;
+  }
+}
+
+$('voice').onclick=async()=>{
+  if(listening){
+    try{recognition?.stop()}catch(e){}
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    $('helpResult').textContent='Spraakherkenning wordt door deze browser niet ondersteund. Gebruik Chrome op Android of typ het probleem.';
+    return;
+  }
+
+  const ok=await requestMicPermission();
+  if(!ok) return;
+
+  try{
+    recognition=new SR();
+    recognition.lang='nl-NL';
+    recognition.continuous=false;
+    recognition.interimResults=true;
+    recognition.maxAlternatives=1;
+
+    listening=true;
+    $('voice').textContent='🔴 STOP SPRAAK';
+    $('voice').style.background='#8b0010';
+    $('helpResult').textContent='Ik luister… spreek nu je probleem of foutcode in.';
+
+    recognition.onresult=e=>{
+      let text='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        text+=e.results[i][0].transcript;
+      }
+      if(text) $('helpText').value=text;
+    };
+
+    recognition.onerror=e=>{
+      listening=false;
+      $('voice').textContent='🎙️ SPRAAK';
+      $('voice').style.background='';
+      const messages={
+        'not-allowed':'Microfoon geweigerd. Geef de website microfoontoegang in Chrome.',
+        'service-not-allowed':'Spraakdienst niet toegestaan. Controleer Chrome/microfoonrechten.',
+        'audio-capture':'Geen microfoon gevonden of microfoon wordt door een andere app gebruikt.',
+        'no-speech':'Geen spraak gehoord. Druk opnieuw en spreek direct.',
+        'network':'Spraakherkenning heeft een internetverbinding nodig.'
+      };
+      $('helpResult').textContent=messages[e.error]||('Spraakfout: '+e.error);
+    };
+
+    recognition.onend=()=>{
+      listening=false;
+      $('voice').textContent='🎙️ SPRAAK';
+      $('voice').style.background='';
+    };
+
+    recognition.start();
+  }catch(e){
+    listening=false;
+    $('voice').textContent='🎙️ SPRAAK';
+    $('voice').style.background='';
+    $('helpResult').textContent='Microfoon starten lukt niet. Controleer de microfoontoestemming van Chrome.';
+  }
+};
+
+function renderAI(a){
+ if(!a)return '';
+ const steps=Array.isArray(a.stappen)?a.stappen:[];
+ return `<div class="aiBlock"><h3>KERN</h3><div>${escapeHtml(a.kern||'')}</div></div>`+
+   (steps.length?`<div class="aiBlock"><h3>STAP VOOR STAP</h3>${steps.map((x,i)=>`<div class="aiStep"><b>${x.nummer||i+1}. ${escapeHtml(x.titel||'Controle')}</b><small><b>Controle:</b> ${escapeHtml(x.check||'')}</small><small><b>Waarom:</b> ${escapeHtml(x.waarom||'')}</small><small><b>Als fout:</b> ${escapeHtml(x.als_fout||'')}</small></div>`).join('')}</div>`:'')+
+   `<div class="aiBlock aiNext"><h3>VOLGENDE ACTIE</h3><div>${escapeHtml(a.volgende_stap||'')}</div></div>`+
+   `<div class="aiBlock aiDone"><h3>KLAAR WANNEER</h3><div>${escapeHtml(a.klaar||'')}</div></div>`+
+   `<div class="aiBlock"><h3>VEILIGHEID / PROCEDURE</h3><div>${escapeHtml(a.veiligheid||'')}</div></div>`;
+}
+function escapeHtml(x){return String(x??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+
+$('analyze').onclick=async()=>{
+ const text=($('helpText').value+' '+$('codeInput').value).trim();
+ const file=$('file').files?.[0];
+ if(!text && !file){$('helpResult').textContent='Voeg eerst een foto, foutcode of omschrijving toe.';return}
+ $('helpResult').textContent='Analyse wordt uitgevoerd…';
+ try{
+   if(file){
+     const dataUrl=await new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=reject;fr.readAsDataURL(file)});
+     const r=await fetch('/api/analyze-image',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:dataUrl,context:JSON.stringify(currentVehicle||{})+' '+text})});
+     const d=await r.json(); if(!r.ok)throw new Error(d.error||'Fotoanalyse mislukt');
+     $('helpResult').innerHTML=renderAI(d.answer);
+   }else{
+     const r=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({dtc:$('codeInput').value||'',problem:text,vehicle:currentVehicle})});
+     const d=await r.json(); if(!r.ok)throw new Error(d.error||'AI-analyse mislukt');
+     $('helpResult').innerHTML=renderAI(d.answer);
+   }
+ }catch(e){$('helpResult').textContent='Analyse niet beschikbaar: '+(e.message||e)}
+};
+</script>
+</body>
+</html>

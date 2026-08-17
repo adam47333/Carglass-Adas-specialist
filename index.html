@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#070707">
+<title>ADAS Expert</title>
+<style>
+:root{--bg:#070707;--panel:#111;--panel2:#171717;--red:#e30613;--yellow:#ffd400;--muted:#9a9a9a;--line:#2b2b2b;--green:#5cff91}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+body{min-height:100vh}
+.app{max-width:620px;margin:auto;min-height:100vh}
+header{padding:18px 16px 14px;background:#080808;border-bottom:1px solid #222;position:sticky;top:0;z-index:20}
+.logo{font-size:24px;font-weight:1000;letter-spacing:.12em}.logo span{color:var(--red)}
+.tag{color:var(--yellow);font-size:9px;font-weight:900;letter-spacing:.16em;margin-top:3px}
+.online{float:right;margin-top:-23px;color:var(--green);font-size:11px;font-weight:900}
+main{padding:14px 12px 100px}
+.screen{display:none}.screen.active{display:block}
+.hero{position:relative;overflow:hidden;border:1px solid #292929;border-radius:20px;padding:24px 18px;background:linear-gradient(145deg,#151515,#0c0c0c);box-shadow:0 18px 45px #0008}
+.hero:after{content:"";position:absolute;right:-15px;top:20px;width:170px;height:120px;opacity:.09;background:linear-gradient(55deg,transparent 48%,#fff 49%,transparent 51%),linear-gradient(-35deg,transparent 48%,#fff 49%,transparent 51%);pointer-events:none}
+.kicker{font-size:9px;color:var(--yellow);font-weight:1000;letter-spacing:.16em}
+h1{font-size:30px;line-height:1;margin:8px 0}.red{color:var(--red)}
+p{color:#aaa;line-height:1.5;font-size:12px}
+.card{margin-top:12px;border:1px solid #292929;border-radius:17px;padding:14px;background:#101010}
+.label{font-size:9px;color:#777;font-weight:1000;letter-spacing:.15em;margin-bottom:8px}
+input,select,textarea{width:100%;background:#171717;border:1px solid #383838;color:#fff;border-radius:11px;padding:12px;font:inherit;outline:none}
+input{text-transform:uppercase;font-weight:900;text-align:center;letter-spacing:.08em}
+select{font-size:12px}
+button{width:100%;border:0;border-radius:11px;padding:13px;margin-top:9px;background:var(--red);color:#fff;font-weight:1000}
+button.yellow{background:var(--yellow);color:#080808}
+button.dark{background:#181818;border:1px solid #383838}
+.status{font-size:11px;color:#999;text-align:center;margin-top:8px;min-height:16px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px;position:sticky;top:67px;z-index:15;background:#070707;padding:6px 0}
+.tabs button{margin:0;padding:10px 3px;background:#151515;border:1px solid #2d2d2d;font-size:10px}
+.tabs button.active{border-color:var(--red);background:#270b0f}
+.vehicleHead{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.vehicleName{font-size:19px;font-weight:1000}.plate{background:#eee;color:#111;border-radius:6px;padding:5px 8px;font-size:11px;font-weight:1000}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.stat{background:#171717;border:1px solid #292929;border-radius:10px;padding:9px}.stat small{display:block;color:#777;font-size:8px;font-weight:900;text-transform:uppercase}.stat b{display:block;font-size:12px;margin-top:3px}
+.bigStatus{border-radius:13px;padding:13px;margin-top:10px;background:#151515;border:1px solid #333}.bigStatus strong{display:block;font-size:14px}.bigStatus span{font-size:10px;color:#aaa}
+.list{margin:8px 0 0;padding:0;list-style:none}.list li{padding:10px 0;border-bottom:1px solid #252525;font-size:12px}.list li:last-child{border-bottom:0}
+.helpGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.helpGrid button{margin:0;padding:12px 5px;background:#181818;border:1px solid #333}
+.preview{display:none;margin-top:10px}.preview img{width:100%;border-radius:12px}
+#helpResult{white-space:pre-line;color:#bbb;font-size:11px;margin-top:10px;line-height:1.5}
+@media(max-width:420px){h1{font-size:26px}.tabs button{font-size:9px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">ADAS <span>EXPERT</span></div>
+  <div class="tag">SMART DIAGNOSTICS</div>
+  <div class="online">● ONLINE</div>
+</header>
+
+<main>
+<section id="start" class="screen active">
+  <div class="hero">
+    <div class="kicker">ADAS EXPERT • WORKSHOP</div>
+    <h1>Ruit vervangen?<br><span class="red">Kalibratie klaar.</span></h1>
+    <p>Voer eerst het kenteken of VIN in. Daarna toont de app alleen de informatie van dit voertuig.</p>
+  </div>
+
+  <div class="card">
+    <div class="label">VOERTUIG OPZOEKEN</div>
+    <input id="plate" maxlength="10" placeholder="KENTEKEN">
+    <select id="country">
+      <option value="NL">🇳🇱 Nederland</option>
+      <option value="DE">🇩🇪 Duitsland</option>
+      <option value="BE">🇧🇪 België</option>
+      <option value="FR">🇫🇷 Frankrijk</option>
+      <option value="GB">🇬🇧 Verenigd Koninkrijk</option>
+      <option value="ES">🇪🇸 Spanje</option>
+      <option value="IT">🇮🇹 Italië</option>
+      <option value="AT">🇦🇹 Oostenrijk</option>
+      <option value="CH">🇨🇭 Zwitserland</option>
+      <option value="LU">🇱🇺 Luxemburg</option>
+    </select>
+    <div style="text-align:center;color:#666;font-size:10px;margin:9px">— OF VIN —</div>
+    <input id="vin" maxlength="17" placeholder="VIN / CHASSISNUMMER">
+    <button id="search">🔎 VOERTUIG OPHALEN</button>
+    <div id="status" class="status"></div>
+  </div>
+</section>
+
+<section id="vehicle" class="screen">
+  <div class="tabs">
+    <button data-tab="vehicle" class="active">🚗 AUTO</button>
+    <button data-tab="cal">🎯 KALIBRATIE</button>
+    <button data-tab="wipers">🧽 WISSERS</button>
+    <button data-tab="help">🆘 HULP</button>
+  </div>
+
+  <div id="tabVehicle">
+    <div class="card">
+      <div class="vehicleHead"><div class="vehicleName" id="name">—</div><div class="plate" id="plateOut">—</div></div>
+      <div class="grid" id="facts"></div>
+    </div>
+  </div>
+
+  <div id="tabCal" class="card" style="display:none">
+    <div class="label">BOSCH ADAS • KALIBRATIE</div>
+    <div class="bigStatus"><strong id="calType">Niet bepaald</strong><span>Kalibratietype wordt alleen ingevuld wanneer betrouwbare voertuig-/systeemgegevens dit ondersteunen.</span></div>
+    <ul class="list">
+      <li>📷 Frontcamera: <b>controleer aanwezig systeem</b></li>
+      <li>📡 Front radar: <b>controleer aanwezig systeem</b></li>
+      <li>🎯 Bosch target/hulpmiddel: <b>volgens Bosch-procedure</b></li>
+      <li>📏 Uitlijning: <b>eerst voertuiggeometrie controleren</b></li>
+      <li>⚠️ Exacte procedure: <b>niet verzinnen; voertuigvariant bevestigen</b></li>
+    </ul>
+  </div>
+
+  <div id="tabWipers" class="card" style="display:none">
+    <div class="label">BOSCH RUITENWISSERS</div>
+    <div id="wiperResult" class="bigStatus"><strong>Geen betrouwbare Bosch-match beschikbaar</strong><span>Er wordt niets verzonnen. Voor een echt Bosch-artikelnummer is een betrouwbare catalogusbron nodig.</span></div>
+  </div>
+
+  <div id="tabHelp" class="card" style="display:none">
+    <div class="label">HULP BIJ PROBLEEM</div>
+    <p>Maak een foto, voer een foutcode in of spreek het probleem in.</p>
+    <div class="helpGrid">
+      <button id="photo">📷 FOTO</button>
+      <button id="voice">🎙️ SPRAAK</button>
+      <button id="code">⌨️ FOUTCODE</button>
+    </div>
+    <input id="file" type="file" accept="image/*" capture="environment" hidden>
+    <input id="codeInput" style="display:none;margin-top:9px" placeholder="Bijv. C1A55 / U0235">
+    <textarea id="helpText" rows="4" placeholder="Probleemomschrijving..."></textarea>
+    <div id="preview" class="preview"><img id="photoPreview"></div>
+    <button id="analyze" class="yellow">🤖 ANALYSEER HULP</button>
+    <div id="helpResult"></div>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let currentVehicle=null;
+
+function showTab(name){
+  ['vehicle','cal','wipers','help'].forEach(x=>{
+    const el=$('tab'+(x==='vehicle'?'Vehicle':x==='cal'?'Cal':x==='wipers'?'Wipers':'Help'));
+    if(el) el.style.display=x===name?'block':'none';
+  });
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
+}
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+
+function val(v){return v!==undefined && v!==null && String(v).trim()!==''?String(v):'Niet bekend'}
+
+function renderVehicle(v){
+  currentVehicle=v;
+  $('name').textContent=[v.merk,v.handelsbenaming||v.model].filter(Boolean).join(' ')||'Voertuig';
+  $('plateOut').textContent=v.kenteken||'VIN';
+  const rows=[
+    ['Eerste toelating',v.datum_eerste_toelating||v.firstRegistration],
+    ['Bouwjaar / modeljaar',v.bouwjaar||v.modeljaar],
+    ['Motorcode',v.motorcode],
+    ['Motor',v.motor||v.cilinderinhoud],
+    ['Vermogen',v.vermogen],
+    ['Brandstof',v.brandstof],
+    ['Carrosserie',v.carrosserie],
+    ['Massa',v.massa_ledig_voertuig],
+    ['Deuren',v.aantal_deuren],
+    ['APK',v.vervaldatum_apk]
+  ];
+  $('facts').innerHTML=rows.map(r=>`<div class="stat"><small>${r[0]}</small><b>${val(r[1])}</b></div>`).join('');
+  $('calType').textContent='Niet bepaald';
+  showTab('vehicle');
+  $('start').classList.remove('active'); $('vehicle').classList.add('active');
+}
+
+async function lookup(){
+  const country=$('country').value;
+  const plate=$('plate').value.trim();
+  const vin=$('vin').value.trim();
+  $('status').textContent='Gegevens ophalen…';
+
+  try{
+    let url='';
+    if(vin) url='/api/vin?vin='+encodeURIComponent(vin);
+    else if(country==='NL' && plate) url='/api/vehicle?kenteken='+encodeURIComponent(plate);
+    else throw new Error('Voor dit land is in deze versie geen betrouwbare kentekenbron gekoppeld. Gebruik een VIN.');
+    const r=await fetch(url);
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||'Voertuig niet gevonden.');
+    renderVehicle(data);
+  }catch(e){$('status').textContent=e.message||'Opzoeken mislukt.'}
+}
+$('search').onclick=lookup;
+$('plate').onkeydown=e=>{if(e.key==='Enter')lookup()};
+$('vin').onkeydown=e=>{if(e.key==='Enter')lookup()};
+
+$('photo').onclick=()=>$('file').click();
+$('file').onchange=e=>{
+  const f=e.target.files?.[0]; if(!f)return;
+  $('photoPreview').src=URL.createObjectURL(f); $('preview').style.display='block';
+};
+$('code').onclick=()=>{
+  $('codeInput').style.display=$('codeInput').style.display==='none'?'block':'none';
+  $('codeInput').focus();
+};
+$('voice').onclick=()=>{
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){$('helpText').placeholder='Spraak wordt niet ondersteund door deze browser. Typ het probleem hier.';return}
+  const r=new SR(); r.lang='nl-NL'; r.continuous=false; r.interimResults=false;
+  $('voice').textContent='🔴 LUISTER...';
+  r.onresult=e=>$('helpText').value+=($('helpText').value?' ':'')+e.results[0][0].transcript;
+  r.onerror=()=>{$('voice').textContent='🎙️ SPRAAK'};
+  r.onend=()=>{$('voice').textContent='🎙️ SPRAAK'};
+  r.start();
+};
+$('analyze').onclick=async()=>{
+  const text=($('helpText').value+' '+$('codeInput').value).trim();
+  if(!text && !$('file').files?.length){$('helpResult').textContent='Voeg eerst een foto, foutcode of omschrijving toe.';return}
+  $('helpResult').textContent='Analyse wordt voorbereid…';
+  // No fabricated diagnosis: only call the existing endpoint when a text diagnosis is supplied.
+  if(text){
+    try{
+      const r=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:$('codeInput').value||'',description:text,vehicle:currentVehicle})});
+      const d=await r.json(); $('helpResult').textContent=d.answer||d.error||'Geen analyse ontvangen.';
+    }catch(e){$('helpResult').textContent='Analyse niet beschikbaar: '+e.message}
+  }else $('helpResult').textContent='Foto geselecteerd. Analyse-endpoint kan hiervoor worden gekoppeld.';
+};
+</script>
+</body>
+</html>
